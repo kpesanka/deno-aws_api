@@ -186,6 +186,7 @@ export async function getSignatureKey(
 
 export function canonicalizeRequest(method: string, url: string, headers: Headers, payloadHash: string) {
   const { pathname, searchParams } = new URL(url);
+  const encodedPathname = pathname.split('/').map(encodeURIComponent).join('/');
   searchParams.sort();
   const canonicalQuerystring = searchParams.toString();
 
@@ -201,7 +202,7 @@ export function canonicalizeRequest(method: string, url: string, headers: Header
   return {
     signedHeaders,
     request: [
-      method, pathname, canonicalQuerystring,
+      method, encodedPathname, canonicalQuerystring,
       canonicalHeaders, signedHeaders,
       payloadHash,
     ].join('\n'),
